@@ -11,6 +11,12 @@ namespace ETS.Library
         private string _firstName;
         private string _lastName;
 
+        public Person()
+        {
+            _firstName = "";
+            _lastName = "";
+        }
+
         public Person(string firstName, string lastName)
         {
             FirstName = firstName;

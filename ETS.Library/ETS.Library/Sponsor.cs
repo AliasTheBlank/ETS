@@ -11,6 +11,11 @@ namespace ETS.Library
         private string _sponsorID;
         private double _totalPrizeValue;
 
+        public Sponsor() : base()
+        {
+            _sponsorID = "";
+            _totalPrizeValue = 0;
+        }
         public Sponsor(string firstName, string lastName) : base(firstName, lastName)
         {
         }
