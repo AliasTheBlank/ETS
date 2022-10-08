@@ -45,5 +45,10 @@ namespace ETS.Library
         public char CardType { get => _cardType; set => _cardType = value; }
         public string CardNumber { get => _cardNumber; set => _cardNumber = value; }
         public string CardExpiry { get => _cardExpiry; set => _cardExpiry = value; }
+
+        public override string ToString()
+        {
+            return base.ToString() + $",{DonorID},{Address},{Phone},{CardType},{CardNumber},{CardExpiry}";
+        }
     }
 }
