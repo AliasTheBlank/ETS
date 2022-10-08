@@ -41,9 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Donation.cs" />
+    <Compile Include="Donations.cs" />
+    <Compile Include="Donor.cs" />
+    <Compile Include="Donors.cs" />
     <Compile Include="Person.cs" />
+    <Compile Include="Prize.cs" />
+    <Compile Include="Prizes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sponsor.cs" />
+    <Compile Include="Sponsors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
