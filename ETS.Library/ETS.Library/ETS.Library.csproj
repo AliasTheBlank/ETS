@@ -45,6 +45,7 @@
     <Compile Include="Donations.cs" />
     <Compile Include="Donor.cs" />
     <Compile Include="Donors.cs" />
+    <Compile Include="ETSManager.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Prize.cs" />
     <Compile Include="Prizes.cs" />
