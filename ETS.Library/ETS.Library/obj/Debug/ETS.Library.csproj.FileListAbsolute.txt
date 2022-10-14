@@ -1,0 +1,2 @@
+C:\GitHub\ETS\ETS.Library\ETS.Library\obj\Debug\ETS.Library.csproj.AssemblyReference.cache
+C:\GitHub\ETS\ETS.Library\ETS.Library\obj\Debug\ETS.Library.csproj.CoreCompileInputs.cache
