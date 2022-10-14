@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ETS.UI.Properties
+namespace TelethonSystem.Properties
 {
 
 

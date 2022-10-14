@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F7FD5324-822F-4BF1-AA64-3CCCDE08D96D}</ProjectGuid>
+    <ProjectGuid>{B67EBF79-0879-4451-A124-0AB6D6F118DC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ETS.UI</RootNamespace>
-    <AssemblyName>ETS.UI</AssemblyName>
+    <RootNamespace>TelethonSystem</RootNamespace>
+    <AssemblyName>TelethonSystem</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
