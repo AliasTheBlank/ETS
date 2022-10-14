@@ -213,6 +213,16 @@ namespace ETS.Library
             return listedSponsors;
         }
 
+        public string ListPrizes()
+        {
+            string listedPrized = "";
+
+            foreach (Prize prize in _prizes)
+                listedPrized += prize.DisplayData() + Environment.NewLine;
+
+            return listedPrized;
+        }
+
         public string ListDonations()
         {
             string listedDonations = "";
