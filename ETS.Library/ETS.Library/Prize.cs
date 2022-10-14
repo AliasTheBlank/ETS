@@ -55,9 +55,9 @@ namespace ETS.Library
             return _prizeID;
         }
 
-        public void Decrease(int timeToDecrease)
+        public void Decrease(int numberToDecrease)
         {
-            Value -= timeToDecrease;
+            CurrentAvailable -= numberToDecrease;
         }
 
         public void OnChangePrize()
@@ -68,6 +68,11 @@ namespace ETS.Library
         public void ClearPrize()
         {
 
+        }
+
+        public string DisplayData()
+        {
+            return $"PrizeID: {PrizeID}, Description: {Description}, Value: {Value}, DoLimt: {DonationLimit}, O.Aval: {OriginalAvailable}, C.Aval: {CurrentAvailable}, SponsorID: {SponsorID}";
         }
     }
 }

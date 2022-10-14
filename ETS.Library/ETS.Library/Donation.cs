@@ -42,5 +42,10 @@ namespace ETS.Library
         {
             return $"{DonationID},{DonationDate},{DonorID},{DonationAmount},{PrizeID}";
         }
+
+        public string DisplayData()
+        {
+            return $"DonationID: {DonationID}, Donation Date: {DonationDate}, DonorID {DonorID}, Donation Amount: {DonationAmount}, PrizeID:{PrizeID}";
+        }
     }
 }

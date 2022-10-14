@@ -165,7 +165,7 @@ namespace ETS.Library
             _prizes.Add(new Prize(prizeID, description, value, donationLimit, originalAvailable, currentAvailable, sponsorID));
         }
 
-        public void AddDonation(string donationID, string donationDate, string donorID, double donationAmount, string prizeID)
+        public void AddDonation(string donationID, DateTime donationDate, string donorID, double donationAmount, string prizeID)
         {
             if (!IDLenghtVerifier(donationID))
                 return;
@@ -173,8 +173,7 @@ namespace ETS.Library
             if (DonationIDExist(donationID))
                 return;
 
-            if (donationDate == "")
-                return;
+            var donationDateString = donationDate.ToString("MM/dd/yyyy h:mm tt");
 
             if (!DonationIDExist(donorID))
                 return;
@@ -185,35 +184,78 @@ namespace ETS.Library
             if (!PrizeIDExist(prizeID))
                 return;
 
-            _donations.Add(new Donation(donationID, donationID, donorID, donationAmount, prizeID));
+            _donations.Add(new Donation(donationID, donationDateString, donorID, donationAmount, prizeID));
         }
         #endregion
 
         #region List method
         public string ListDonors()
         {
+            string listedDonor = "";
 
+            foreach (Donor donor in _donors)
+            {
+                listedDonor += donor.DisplayData() + Environment.NewLine;
+            }
+
+            return listedDonor;
         }
 
         public string ListSponsors()
         {
+            string listedSponsors = "";
 
+            foreach (Sponsor sponsor in _sponsors)
+            {
+                listedSponsors += sponsor.DisplayData() + Environment.NewLine;
+            }
+
+            return listedSponsors;
         }
 
         public string ListDonations()
         {
+            string listedDonations = "";
 
+            foreach (Donation donation in _donations)
+            {
+                listedDonations += donation.DisplayData() + Environment.NewLine;
+            }
+
+            return listedDonations;
         }
 
-        public string ListQualifiedPrizes()
+        public string ListQualifiedPrizes(double donationAmount)
         {
+            string listedPrized = "";
 
+            foreach (Prize prize in _prizes)
+            {
+                if (prize.DonationLimit <= donationAmount)
+                listedPrized += prize.DisplayData() + Environment.NewLine;
+            }
+
+            return listedPrized;
         }
         #endregion
 
-        public bool RecordDonation()
+        public bool RecordDonation(string prizeID, int numberOfPrizes, string donorID, string donationAmount, string donationID)
         {
+            foreach (Prize prize in _prizes)
+            {
+                if (prizeID == prize.GetPrizeID())
+                {
+                    if (numberOfPrizes <= prize.CurrentAvailable)
+                    {
+                        prize.Decrease(numberOfPrizes);
+                        // It is supossed to call the fuction with the system date?
+                        AddDonation(donationID, DateTime.Now, donorID, Convert.ToDouble(donationAmount), prizeID);
+                        return true;
+                    }
+                }
+            }
 
+            return false;
         }
 
     }

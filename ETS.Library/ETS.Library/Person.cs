@@ -30,5 +30,10 @@ namespace ETS.Library
         {
             return $"{_firstName},{_lastName}";
         }
+
+        public virtual string DisplayData()
+        {
+            return $"Name: {_firstName} {_lastName}";
+        }
     }
 }

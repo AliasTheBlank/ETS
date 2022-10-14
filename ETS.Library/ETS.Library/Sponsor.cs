@@ -44,5 +44,10 @@ namespace ETS.Library
             _totalPrizeValue += valueToAdd;
             return TotalPrizeValue;
         }
+
+        public override string DisplayData()
+        {
+            return base.ToString() + $", SponsorID: {SponsorID}, Total Prize Value: {TotalPrizeValue}";
+        }
     }
 }
