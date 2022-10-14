@@ -23,10 +23,10 @@ namespace ETS.Library
             PrizeID = "";
         }
 
-        public Donation(string donationID, string donationDame, string donorID, double donationAmount, string prizeID)
+        public Donation(string donationID, string donationDate, string donorID, double donationAmount, string prizeID)
         {
             DonationID = donationID;
-            DonationDate = donationDame;
+            DonationDate = donationDate;
             DonorID = donorID;
             DonationAmount = donationAmount;
             PrizeID = prizeID;

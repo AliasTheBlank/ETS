@@ -82,12 +82,22 @@ namespace ETS.Library
 
 
         }
+
+        public bool IDLenghtVerifier(string iD)
+        {
+            if (iD.Length != 4)
+                return false;
+            return true;
+        }
         #endregion
 
         #region Add methods
         public void AddDonor(string firstName, string lastName, string donorID, string address, 
             string phone, char cardType, string cardNumber, string cardExpiry)
         {
+            if (!IDLenghtVerifier(donorID))
+                return;
+
             if (DonorIDExist(donorID))
                 return;
 
@@ -112,18 +122,70 @@ namespace ETS.Library
 
         public void AddSponsor(string firstName, string lastName, string sponsorID, double totalPrizeValue)
         {
+            if (!IDLenghtVerifier(sponsorID))
+                return;
 
+            if ((firstName.Length + lastName.Length) > 30)
+                return;
+
+            if (SponsorsIDExist(sponsorID))
+                return;
+
+            if (totalPrizeValue < 0)
+                return;
+
+            var newSponsor = new Sponsor(firstName, lastName, sponsorID, totalPrizeValue);
+            _sponsors.Add(newSponsor);
         }
 
         public void AddPrize(string prizeID, string description, double value, double donationLimit, 
             int originalAvailable, int currentAvailable, string sponsorID)
         {
+            if (IDLenghtVerifier(prizeID))
+                return;
 
+            if (PrizeIDExist(prizeID))
+                return;
+
+            if (description.Length > 15)
+                return;
+
+            if (donationLimit < 0)
+                return;
+
+            if (originalAvailable < 0)
+                return;
+
+            if (currentAvailable < 0 || currentAvailable > originalAvailable)
+                return;
+
+            if (!SponsorsIDExist(sponsorID))
+                return;
+
+            _prizes.Add(new Prize(prizeID, description, value, donationLimit, originalAvailable, currentAvailable, sponsorID));
         }
 
-        public void AddDonation(string donationID, string donationDame, string donorID, double donationAmount, string prizeID)
+        public void AddDonation(string donationID, string donationDate, string donorID, double donationAmount, string prizeID)
         {
+            if (!IDLenghtVerifier(donationID))
+                return;
 
+            if (DonationIDExist(donationID))
+                return;
+
+            if (donationDate == "")
+                return;
+
+            if (!DonationIDExist(donorID))
+                return;
+
+            if (donationAmount < 5 || donationAmount > 999999999)
+                return;
+
+            if (!PrizeIDExist(prizeID))
+                return;
+
+            _donations.Add(new Donation(donationID, donationID, donorID, donationAmount, prizeID));
         }
         #endregion
 
