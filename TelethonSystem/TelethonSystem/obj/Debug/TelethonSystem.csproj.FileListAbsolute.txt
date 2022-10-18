@@ -6,10 +6,10 @@ C:\GitHub\ETS\TelethonSystem\TelethonSystem\bin\Debug\ETS.Library.pdb
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.AssemblyReference.cache
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.SuggestedBindingRedirects.cache
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.LoginForm.resources
-C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.MainForm.resources
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.Properties.Resources.resources
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.GenerateResource.cache
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.CoreCompileInputs.cache
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.CopyComplete
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.exe
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.pdb
+C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.ETSTelethon.resources

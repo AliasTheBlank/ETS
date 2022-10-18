@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ETS.Library;
 
 namespace TelethonSystem
 {
-    public partial class MainForm : Form
+    public partial class ETSTelethon : Form
     {
-        public MainForm()
+        ETSManager manager = new ETSManager();
+        public ETSTelethon()
         {
             InitializeComponent();
         }
