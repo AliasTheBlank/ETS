@@ -16,6 +16,13 @@ namespace ETS.Library
         private Donations _donations = new Donations();
         private Prizes _prizes = new Prizes();
 
+        private List<User> myUsers = new List<User>();
+
+        public ETSManager()
+        {
+            OnLoad();
+        }
+
         #region extra methods
 
         // Id verificators, return true if it find a match
@@ -268,5 +275,19 @@ namespace ETS.Library
             return false;
         }
 
+        public void OnLoad()
+        {
+            myUsers = User.ReadUsers();
+        }
+
+        public bool FindUser(string username, string password)
+        {
+            foreach (var user in myUsers)
+            {
+                if (user.GetUserName() == username && user.GetPassword() == password)
+                    return true;
+            }
+            return false;
+        }
     }
 }

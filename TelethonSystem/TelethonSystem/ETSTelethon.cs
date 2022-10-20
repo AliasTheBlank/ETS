@@ -13,10 +13,11 @@ namespace TelethonSystem
 {
     public partial class ETSTelethon : Form
     {
-        ETSManager manager = new ETSManager();
-        public ETSTelethon()
+        ETSManager myManager;
+        public ETSTelethon(ETSManager manager)
         {
             InitializeComponent();
+            myManager = manager;
         }
     }
 }
