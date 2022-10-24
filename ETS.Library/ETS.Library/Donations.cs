@@ -19,5 +19,10 @@ namespace ETS.Library
             get { return (Donation)this[index]; }
             set { this[index] = value; }
         }
+
+        public void Remove(Donation donation)
+        {
+            List.Remove(donation);
+        }
     }
 }

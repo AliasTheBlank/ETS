@@ -19,5 +19,14 @@ namespace ETS.Library
             get { return (Donor)this[index]; }
             set { this[index] = value; }
         }
+
+        public void Remove(string donorToRemove)
+        {
+            foreach (Donor donor in this)
+            {
+                if (donor.DonorID == donorToRemove)
+                    List.Remove(donor);
+            }
+        }
     }
 }

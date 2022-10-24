@@ -90,6 +90,25 @@ namespace ETS.Library
 
         }
 
+        public bool ValidExpiradateDate(string expiracyDate)
+        {
+            if (!Regex.IsMatch(expiracyDate, @"\b(0[1-9]|1[0-2])\/?([0-9]{2})\b"))
+                return false;
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
+            year = year % 100;
+
+            int givenYear = Convert.ToInt16(expiracyDate.Substring(3, expiracyDate.Length - 1));
+            int givenMonth = Convert.ToInt16(expiracyDate.Substring(0, 1));
+
+            if (givenYear == year && month > givenMonth || givenYear < year)
+                return false;
+
+            return true;
+        }
+
         public bool IDLenghtVerifier(string iD)
         {
             if (iD.Length != 4)
@@ -99,99 +118,104 @@ namespace ETS.Library
         #endregion
 
         #region Add methods
-        public void AddDonor(string firstName, string lastName, string donorID, string address, 
+        public (string, bool) AddDonor(string firstName, string lastName, string donorID, string address, 
             string phone, char cardType, string cardNumber, string cardExpiry)
         {
             if (!IDLenghtVerifier(donorID))
-                return;
+                return ("ID character length different than 4 character", false);
 
             if (DonorIDExist(donorID))
-                return;
+                return ("The donor ID given is already in use", false);
 
             if (firstName.Length > 15 || firstName.Length > 15 || address.Length > 40)
-                return;
+                return ("the name, last name, or address has more characters than given", false);
 
             if (!ValidPhoneNumber(phone))
-                return;
+                return ("The phone number format is not valid", false);
 
-            if (!CreditOrDebit(cardType))
-                return;
+            //if (!CreditOrDebit(cardType))
+            //    return ("ID character length different than 4 character", false);
 
             if (cardNumber.Length != 16)
-                return;
+                return ("The card number has to be 16 numbers long", false);
 
             if (!ValidDate(cardExpiry))
-                return;
+                return ("The card's expiracy date is not valid", false);
 
             var newDonor = new Donor(firstName, lastName, donorID, address, phone, cardType, cardNumber, cardExpiry);
             _donors.Add(newDonor);
+
+            return ("The donor was successfully added", true);
         }
 
-        public void AddSponsor(string firstName, string lastName, string sponsorID, double totalPrizeValue)
+        public string AddSponsor(string firstName, string lastName, string sponsorID, double totalPrizeValue)
         {
             if (!IDLenghtVerifier(sponsorID))
-                return;
+                return "Id lenght is different than 4 characters";
 
             if ((firstName.Length + lastName.Length) > 30)
-                return;
+                return "Name and last name lenght have more than 30 characters";
 
             if (SponsorsIDExist(sponsorID))
-                return;
+                return "The given id is already in use";
 
             if (totalPrizeValue < 0)
-                return;
+                return "the total prize can't be negativa";
 
             var newSponsor = new Sponsor(firstName, lastName, sponsorID, totalPrizeValue);
             _sponsors.Add(newSponsor);
+
+            return "The sponsor was successfully added";
         }
 
-        public void AddPrize(string prizeID, string description, double value, double donationLimit, 
+        public string AddPrize(string prizeID, string description, double value, double donationLimit, 
             int originalAvailable, int currentAvailable, string sponsorID)
         {
             if (IDLenghtVerifier(prizeID))
-                return;
+                return "Id must be 4 characters long";
 
             if (PrizeIDExist(prizeID))
-                return;
+                return "The prize id is already being in used";
 
             if (description.Length > 15)
-                return;
+                return "The prize length is bigger than 15 characters";
 
             if (donationLimit < 0)
-                return;
+                return "The donation limit cannot be negative";
 
             if (originalAvailable < 0)
-                return;
+                return "There cannot be a negative number of prizes";
 
             if (currentAvailable < 0 || currentAvailable > originalAvailable)
-                return;
+                return "The actual number of prizes cannot be bigger than the original prize";
 
             if (!SponsorsIDExist(sponsorID))
-                return;
+                return "Error 404, Sponsor Id not found";
 
-            _prizes.Add(new Prize(prizeID, description, value, donationLimit, originalAvailable, currentAvailable, sponsorID));
+            var temp = new Prize(prizeID, description, value, donationLimit, originalAvailable, currentAvailable, sponsorID);
+            _prizes.Add(temp);
+            return "The prize was successfully added";
         }
 
-        public void AddDonation(string donationID, DateTime donationDate, string donorID, double donationAmount, string prizeID)
+        public bool AddDonation(string donationID, string donationDate, string donorID, double donationAmount, string prizeID)
         {
             if (!IDLenghtVerifier(donationID))
-                return;
+                 return false;
 
             if (DonationIDExist(donationID))
-                return;
+                return false;
 
-            var donationDateString = donationDate.ToString("MM/dd/yyyy h:mm tt");
-
-            if (!DonationIDExist(donorID))
-                return;
+            //if (!DonationIDExist(donorID))
+            //    return;
 
             if (donationAmount < 5 || donationAmount > 999999999)
-                return;
+                return false;
 
             if (!PrizeIDExist(prizeID))
-                return;
+                return false;
 
-            _donations.Add(new Donation(donationID, donationDateString, donorID, donationAmount, prizeID));
+            _donations.Add(new Donation(donationID, donationDate, donorID, donationAmount, prizeID));
+            return true;
         }
         #endregion
 
@@ -263,16 +287,37 @@ namespace ETS.Library
                 if (prizeID == prize.GetPrizeID())
                 {
                     if (numberOfPrizes <= prize.CurrentAvailable)
-                    {
+                    { 
+                        var date = DateTime.Now.ToString("MM/dd/yyyy");
+                         var flag = AddDonation(donationID, date, donorID, Convert.ToDouble(donationAmount), prizeID);
+
+                        if (!flag)
+                        {
+                            return false;
+                        }
+
                         prize.Decrease(numberOfPrizes);
-                        // It is supossed to call the fuction with the system date?
-                        AddDonation(donationID, DateTime.Now, donorID, Convert.ToDouble(donationAmount), prizeID);
                         return true;
                     }
                 }
             }
 
             return false;
+        }
+
+        public void HandleUserError(string prizeID, string donationID, string donationAmount)
+        {
+            foreach (Prize prize in _prizes)
+            {
+                if (prize.GetPrizeID() == prizeID)
+                    prize.CurrentAvailable += Convert.ToInt32(donationAmount);
+            }
+
+            foreach (Donation donation in _donations)
+            {
+                if (donation.DonationID == donationID)
+                    _donations.Remove(donation);
+            }
         }
 
         public void OnLoad()
@@ -287,6 +332,19 @@ namespace ETS.Library
                 if (user.GetUserName() == username && user.GetPassword() == password)
                     return true;
             }
+            return false;
+        }
+
+        public bool DonorAlreadyExist(string donorID)
+        {
+            foreach (Donor donor in _donors)
+            {
+                if (donor.DonorID == donorID)
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
     }

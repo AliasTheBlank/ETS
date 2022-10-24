@@ -19,5 +19,11 @@ namespace ETS.Library
             get { return (Prize)this[index]; }
             set { this[index] = value; }
         }
+
+        public void Remove(Prize oldPrize)
+        {
+            List.Remove(oldPrize);
+        }
+
     }
 }
