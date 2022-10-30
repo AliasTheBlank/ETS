@@ -13,3 +13,4 @@ C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.csproj.Copy
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.exe
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.pdb
 C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.ETSTelethon.resources
+C:\GitHub\ETS\TelethonSystem\TelethonSystem\obj\Debug\TelethonSystem.ShowPrizes.resources
