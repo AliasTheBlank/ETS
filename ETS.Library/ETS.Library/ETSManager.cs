@@ -71,13 +71,15 @@ namespace ETS.Library
             return (type == 'D' || type == 'C');
         }
 
+        // Obsolete
         public bool ValidDate(string date)
         {
-            if (date.Length != 7)
+            if (date.Length != 5)
                 return false;
 
-            var month = date.Substring(0, 1);
-            var year = date.Substring(3, date.Length - 1);
+            var year = date.Substring(3);
+            var month = date.Substring(0, 2);
+            
 
             if (int.TryParse(month, out var numberOfMonts) && numberOfMonts < 1 && numberOfMonts > 12)
                 return false;
@@ -100,10 +102,12 @@ namespace ETS.Library
 
             year = year % 100;
 
-            int givenYear = Convert.ToInt16(expiracyDate.Substring(3, expiracyDate.Length - 1));
-            int givenMonth = Convert.ToInt16(expiracyDate.Substring(0, 1));
+            int givenYear = Convert.ToInt16(expiracyDate.Substring(3));
+            int givenMonth = Convert.ToInt16(expiracyDate.Substring(0, 2));
 
             if (givenYear == year && month > givenMonth || givenYear < year)
+                return false;
+            else if (givenYear < year)
                 return false;
 
             return true;
@@ -139,7 +143,7 @@ namespace ETS.Library
             if (cardNumber.Length != 16)
                 return ("The card number has to be 16 numbers long", false);
 
-            if (!ValidDate(cardExpiry))
+            if (!ValidExpiradateDate(cardExpiry))
                 return ("The card's expiracy date is not valid", false);
 
             var newDonor = new Donor(firstName, lastName, donorID, address, phone, cardType, cardNumber, cardExpiry);
@@ -148,7 +152,7 @@ namespace ETS.Library
             return ("The donor was successfully added", true);
         }
 
-        public string AddSponsor(string firstName, string lastName, string sponsorID, double totalPrizeValue)
+        public string AddSponsor(string firstName, string lastName, string sponsorID, string totalPrizeValue)
         {
             if (!IDLenghtVerifier(sponsorID))
                 return "Id lenght is different than 4 characters";
@@ -159,19 +163,22 @@ namespace ETS.Library
             if (SponsorsIDExist(sponsorID))
                 return "The given id is already in use";
 
-            if (totalPrizeValue < 0)
+            if (!double.TryParse(totalPrizeValue, out var dTotalPrizeValue))
+                return "the total prize has to be a number";
+
+            if (dTotalPrizeValue < 0)
                 return "the total prize can't be negativa";
 
-            var newSponsor = new Sponsor(firstName, lastName, sponsorID, totalPrizeValue);
+            var newSponsor = new Sponsor(firstName, lastName, sponsorID, dTotalPrizeValue);
             _sponsors.Add(newSponsor);
 
             return "The sponsor was successfully added";
         }
 
-        public string AddPrize(string prizeID, string description, double value, double donationLimit, 
-            int originalAvailable, int currentAvailable, string sponsorID)
+        public string AddPrize(string prizeID, string description, string value, string donationLimit, 
+        string originalAvailable, string currentAvailable, string sponsorID)
         {
-            if (IDLenghtVerifier(prizeID))
+            if (!IDLenghtVerifier(prizeID))
                 return "Id must be 4 characters long";
 
             if (PrizeIDExist(prizeID))
@@ -180,42 +187,61 @@ namespace ETS.Library
             if (description.Length > 15)
                 return "The prize length is bigger than 15 characters";
 
-            if (donationLimit < 0)
+            if (!double.TryParse(value, out var dValue))
+                return "The value has to be number";
+
+            if (dValue < 0)
+                return "the value can't be negative";
+
+            if (!double.TryParse(donationLimit, out var dDonationLimit))
                 return "The donation limit cannot be negative";
 
-            if (originalAvailable < 0)
+            if (dDonationLimit < 0)
+                return "The donation limit cannot be negative";
+
+            if (!int.TryParse(originalAvailable, out var dOriginalAvailable))
+                return "The original available amount has to be a number";
+
+            if (dOriginalAvailable < 0)
                 return "There cannot be a negative number of prizes";
 
-            if (currentAvailable < 0 || currentAvailable > originalAvailable)
+            if (!int.TryParse(currentAvailable, out var dCurrentAvailable))
+                return "The current available cannot be negative";
+
+            if (dCurrentAvailable < 0 || dCurrentAvailable > dOriginalAvailable)
                 return "The actual number of prizes cannot be bigger than the original prize";
 
             if (!SponsorsIDExist(sponsorID))
                 return "Error 404, Sponsor Id not found";
 
-            var temp = new Prize(prizeID, description, value, donationLimit, originalAvailable, currentAvailable, sponsorID);
+            var temp = new Prize(prizeID, description, dValue, dDonationLimit, dOriginalAvailable, dCurrentAvailable, sponsorID);
             _prizes.Add(temp);
             return "The prize was successfully added";
         }
 
-        public bool AddDonation(string donationID, string donationDate, string donorID, double donationAmount, string prizeID)
+        public (bool,string) AddDonation(string donationID, string donationDate, string donorID, string donationAmount, string prizeID)
         {
             if (!IDLenghtVerifier(donationID))
-                 return false;
+                 return (false, "Invalid id lenght");
 
             if (DonationIDExist(donationID))
-                return false;
+                return (false, "Given donation id is already in use");
 
-            //if (!DonationIDExist(donorID))
+            //if (DonorIDExist(donorID))
             //    return;
 
-            if (donationAmount < 5 || donationAmount > 999999999)
-                return false;
+            if (!double.TryParse(donationAmount, out var dDonationAmount))
+                return (false, "The donation have to be a number");
+
+            if (dDonationAmount < 5 || dDonationAmount > 999999999)
+                return (false, "Donation amount can't be less than 5 or more than 999'999'999");
 
             if (!PrizeIDExist(prizeID))
-                return false;
+                return (false, "Prize ID not found");
 
-            _donations.Add(new Donation(donationID, donationDate, donorID, donationAmount, prizeID));
-            return true;
+            var temp = new Donation(donationID, donationDate, donorID, dDonationAmount, prizeID);
+            _donations.Add(temp);
+            return (true, "donation was added");
         }
         #endregion
 
@@ -280,29 +306,38 @@ namespace ETS.Library
         }
         #endregion
 
-        public bool RecordDonation(string prizeID, int numberOfPrizes, string donorID, string donationAmount, string donationID)
+        public (bool, string) RecordDonation(string prizeID, string numberOfPrizes, string donorID, string donationAmount, string donationID)
         {
+            if (!int.TryParse(numberOfPrizes, out var iNumberOfPrizes))
+                return (false, "the number of prizes has to be a number");
+
+            if (!double.TryParse(donationAmount, out var dDonationAmount))
+                return (false, "The donation amount is not a number");
+
             foreach (Prize prize in _prizes)
             {
                 if (prizeID == prize.GetPrizeID())
                 {
-                    if (numberOfPrizes <= prize.CurrentAvailable)
+                    if (dDonationAmount < prize.DonationLimit)
+                        return (false, "The donation amount doesn't qualify to this prize");
+
+                    if (iNumberOfPrizes <= prize.CurrentAvailable && dDonationAmount >= (prize.Value * iNumberOfPrizes))
                     { 
                         var date = DateTime.Now.ToString("MM/dd/yyyy");
-                         var flag = AddDonation(donationID, date, donorID, Convert.ToDouble(donationAmount), prizeID);
+                        var flag = AddDonation(donationID, date, donorID, donationAmount, prizeID);
 
-                        if (!flag)
+                        if (!flag.Item1)
                         {
-                            return false;
+                            return flag;
                         }
 
-                        prize.Decrease(numberOfPrizes);
-                        return true;
+                        prize.Decrease(iNumberOfPrizes);
+                        return flag;
                     }
                 }
             }
 
-            return false;
+            return (false, "Please insert a valid prize id");
         }
 
         public void HandleUserError(string prizeID, string donationID, string donationAmount)
@@ -316,13 +351,40 @@ namespace ETS.Library
             foreach (Donation donation in _donations)
             {
                 if (donation.DonationID == donationID)
+                {
                     _donations.Remove(donation);
+                    return;
+                }
             }
         }
 
         public void OnLoad()
         {
             myUsers = User.ReadUsers();
+            _sponsors.ReadSponsors();
+            _donations.ReadDonation();
+            _donors.ReadDonors();
+            _prizes.ReadPrizes();
+        }
+
+        public void SaveDonors()
+        {
+            _donors.SaveDonors();
+        }
+
+        public void SaveDonations()
+        {
+            _donations.SaveDonation();
+        }
+
+        public void SavePrizes()
+        {
+            _prizes.SavePrizes();
+        }
+
+        public void SaveSponsors()
+        {
+            _sponsors.SaveSponsor();
         }
 
         public bool FindUser(string username, string password)
@@ -346,6 +408,15 @@ namespace ETS.Library
             }
 
             return false;
+        }
+
+        // To make this better I need to create a regex
+        public string GetPrizeID(string message)
+        {
+            var temp = message.Split(',');
+            temp = temp[0].Split(' ');
+
+            return temp[1];
         }
     }
 }

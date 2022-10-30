@@ -7,10 +7,20 @@ using System.Threading.Tasks;
 
 namespace ETS.Library
 {
+    [Flags]
+    enum Permits : short
+    {
+        None = 0,
+        Create = 1,
+        Delete = 2,
+        Modify = 4
+    }
+
     public class User
     {
         private string _username;
         private string _password;
+        
 
         public User()
         {

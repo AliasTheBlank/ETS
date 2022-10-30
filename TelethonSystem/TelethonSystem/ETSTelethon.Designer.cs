@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.rtbxList = new System.Windows.Forms.RichTextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabcontrol1 = new System.Windows.Forms.TabControl();
             this.SponsorTab = new System.Windows.Forms.TabPage();
             this.btnAddSponsor = new System.Windows.Forms.Button();
             this.btnAddPrize = new System.Windows.Forms.Button();
@@ -61,7 +61,6 @@
             this.txtDonorLN = new System.Windows.Forms.TextBox();
             this.txtDonorFN = new System.Windows.Forms.TextBox();
             this.txtDonorID = new System.Windows.Forms.TextBox();
-            this.btnSaveDonorInfo = new System.Windows.Forms.Button();
             this.btnListDonors = new System.Windows.Forms.Button();
             this.btnListDonations = new System.Windows.Forms.Button();
             this.btnAddDonation = new System.Windows.Forms.Button();
@@ -90,13 +89,26 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.tabSave = new System.Windows.Forms.TabPage();
+            this.cbSaveDonation = new System.Windows.Forms.CheckBox();
+            this.cbSaveDonors = new System.Windows.Forms.CheckBox();
+            this.cbSavePrizes = new System.Windows.Forms.CheckBox();
+            this.cbSaveSponsor = new System.Windows.Forms.CheckBox();
+            this.rbEspecific = new System.Windows.Forms.RadioButton();
+            this.rbSimple = new System.Windows.Forms.RadioButton();
+            this.btnSaveAll = new System.Windows.Forms.Button();
+            this.btnSaveDonations = new System.Windows.Forms.Button();
+            this.btnSaveDonors = new System.Windows.Forms.Button();
+            this.btnSavePrizes = new System.Windows.Forms.Button();
+            this.btnSaveSponors = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
+            this.tabcontrol1.SuspendLayout();
             this.SponsorTab.SuspendLayout();
             this.DonorsTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabSave.SuspendLayout();
             this.SuspendLayout();
             // 
             // rtbxList
@@ -105,19 +117,21 @@
             this.rtbxList.Location = new System.Drawing.Point(12, 329);
             this.rtbxList.Margin = new System.Windows.Forms.Padding(2);
             this.rtbxList.Name = "rtbxList";
+            this.rtbxList.ReadOnly = true;
             this.rtbxList.Size = new System.Drawing.Size(606, 102);
             this.rtbxList.TabIndex = 2;
             this.rtbxList.Text = "";
             // 
-            // tabControl1
+            // tabcontrol1
             // 
-            this.tabControl1.Controls.Add(this.SponsorTab);
-            this.tabControl1.Controls.Add(this.DonorsTab);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(529, 312);
-            this.tabControl1.TabIndex = 14;
+            this.tabcontrol1.Controls.Add(this.SponsorTab);
+            this.tabcontrol1.Controls.Add(this.DonorsTab);
+            this.tabcontrol1.Controls.Add(this.tabSave);
+            this.tabcontrol1.Location = new System.Drawing.Point(12, 12);
+            this.tabcontrol1.Name = "tabcontrol1";
+            this.tabcontrol1.SelectedIndex = 0;
+            this.tabcontrol1.Size = new System.Drawing.Size(529, 312);
+            this.tabcontrol1.TabIndex = 14;
             // 
             // SponsorTab
             // 
@@ -359,7 +373,6 @@
             this.DonorsTab.Controls.Add(this.txtDonorLN);
             this.DonorsTab.Controls.Add(this.txtDonorFN);
             this.DonorsTab.Controls.Add(this.txtDonorID);
-            this.DonorsTab.Controls.Add(this.btnSaveDonorInfo);
             this.DonorsTab.Controls.Add(this.btnListDonors);
             this.DonorsTab.Controls.Add(this.btnListDonations);
             this.DonorsTab.Controls.Add(this.btnAddDonation);
@@ -387,6 +400,7 @@
             this.txtDonationAmount.Name = "txtDonationAmount";
             this.txtDonationAmount.Size = new System.Drawing.Size(85, 20);
             this.txtDonationAmount.TabIndex = 21;
+            this.txtDonationAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDonationAmount_KeyPress);
             // 
             // txtDonationID
             // 
@@ -431,16 +445,6 @@
             this.txtDonorID.Name = "txtDonorID";
             this.txtDonorID.Size = new System.Drawing.Size(100, 20);
             this.txtDonorID.TabIndex = 15;
-            // 
-            // btnSaveDonorInfo
-            // 
-            this.btnSaveDonorInfo.Location = new System.Drawing.Point(399, 260);
-            this.btnSaveDonorInfo.Name = "btnSaveDonorInfo";
-            this.btnSaveDonorInfo.Size = new System.Drawing.Size(116, 23);
-            this.btnSaveDonorInfo.TabIndex = 14;
-            this.btnSaveDonorInfo.Text = "Save Donor Info";
-            this.btnSaveDonorInfo.UseVisualStyleBackColor = true;
-            this.btnSaveDonorInfo.Click += new System.EventHandler(this.btnSaveDonorInfo_Click);
             // 
             // btnListDonors
             // 
@@ -529,6 +533,7 @@
             this.btnShowPrizes.TabIndex = 0;
             this.btnShowPrizes.Text = "Show Prizes";
             this.btnShowPrizes.UseVisualStyleBackColor = true;
+            this.btnShowPrizes.Click += new System.EventHandler(this.btnShowPrizes_Click);
             // 
             // groupBox1
             // 
@@ -562,6 +567,7 @@
             this.txtCreditCardExpiry.Name = "txtCreditCardExpiry";
             this.txtCreditCardExpiry.Size = new System.Drawing.Size(76, 23);
             this.txtCreditCardExpiry.TabIndex = 23;
+            this.txtCreditCardExpiry.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCreditCardExpiry_KeyPress);
             // 
             // txtCreditCardNumber
             // 
@@ -724,6 +730,141 @@
             this.label11.TabIndex = 0;
             this.label11.Text = "Donor Information:";
             // 
+            // tabSave
+            // 
+            this.tabSave.BackColor = System.Drawing.Color.Silver;
+            this.tabSave.Controls.Add(this.cbSaveDonation);
+            this.tabSave.Controls.Add(this.cbSaveDonors);
+            this.tabSave.Controls.Add(this.cbSavePrizes);
+            this.tabSave.Controls.Add(this.cbSaveSponsor);
+            this.tabSave.Controls.Add(this.rbEspecific);
+            this.tabSave.Controls.Add(this.rbSimple);
+            this.tabSave.Controls.Add(this.btnSaveAll);
+            this.tabSave.Controls.Add(this.btnSaveDonations);
+            this.tabSave.Controls.Add(this.btnSaveDonors);
+            this.tabSave.Controls.Add(this.btnSavePrizes);
+            this.tabSave.Controls.Add(this.btnSaveSponors);
+            this.tabSave.Location = new System.Drawing.Point(4, 22);
+            this.tabSave.Name = "tabSave";
+            this.tabSave.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSave.Size = new System.Drawing.Size(521, 286);
+            this.tabSave.TabIndex = 2;
+            this.tabSave.Text = "Save";
+            // 
+            // cbSaveDonation
+            // 
+            this.cbSaveDonation.AutoSize = true;
+            this.cbSaveDonation.Location = new System.Drawing.Point(333, 129);
+            this.cbSaveDonation.Name = "cbSaveDonation";
+            this.cbSaveDonation.Size = new System.Drawing.Size(102, 17);
+            this.cbSaveDonation.TabIndex = 10;
+            this.cbSaveDonation.Text = "Save Donations";
+            this.cbSaveDonation.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveDonors
+            // 
+            this.cbSaveDonors.AutoSize = true;
+            this.cbSaveDonors.Location = new System.Drawing.Point(100, 129);
+            this.cbSaveDonors.Name = "cbSaveDonors";
+            this.cbSaveDonors.Size = new System.Drawing.Size(88, 17);
+            this.cbSaveDonors.TabIndex = 9;
+            this.cbSaveDonors.Text = "Save Donors";
+            this.cbSaveDonors.UseVisualStyleBackColor = true;
+            // 
+            // cbSavePrizes
+            // 
+            this.cbSavePrizes.AutoSize = true;
+            this.cbSavePrizes.Location = new System.Drawing.Point(333, 58);
+            this.cbSavePrizes.Name = "cbSavePrizes";
+            this.cbSavePrizes.Size = new System.Drawing.Size(82, 17);
+            this.cbSavePrizes.TabIndex = 8;
+            this.cbSavePrizes.Text = "Save Prizes";
+            this.cbSavePrizes.UseVisualStyleBackColor = true;
+            // 
+            // cbSaveSponsor
+            // 
+            this.cbSaveSponsor.AutoSize = true;
+            this.cbSaveSponsor.Location = new System.Drawing.Point(100, 58);
+            this.cbSaveSponsor.Name = "cbSaveSponsor";
+            this.cbSaveSponsor.Size = new System.Drawing.Size(93, 17);
+            this.cbSaveSponsor.TabIndex = 7;
+            this.cbSaveSponsor.Text = "Save Sponsor";
+            this.cbSaveSponsor.UseVisualStyleBackColor = true;
+            // 
+            // rbEspecific
+            // 
+            this.rbEspecific.AutoSize = true;
+            this.rbEspecific.Location = new System.Drawing.Point(68, 6);
+            this.rbEspecific.Name = "rbEspecific";
+            this.rbEspecific.Size = new System.Drawing.Size(63, 17);
+            this.rbEspecific.TabIndex = 6;
+            this.rbEspecific.TabStop = true;
+            this.rbEspecific.Text = "Specific";
+            this.rbEspecific.UseVisualStyleBackColor = true;
+            this.rbEspecific.CheckedChanged += new System.EventHandler(this.rbEspecific_CheckedChanged);
+            // 
+            // rbSimple
+            // 
+            this.rbSimple.AutoSize = true;
+            this.rbSimple.Location = new System.Drawing.Point(6, 6);
+            this.rbSimple.Name = "rbSimple";
+            this.rbSimple.Size = new System.Drawing.Size(56, 17);
+            this.rbSimple.TabIndex = 5;
+            this.rbSimple.TabStop = true;
+            this.rbSimple.Text = "Simple";
+            this.rbSimple.UseVisualStyleBackColor = true;
+            this.rbSimple.CheckedChanged += new System.EventHandler(this.rbSimple_CheckedChanged);
+            // 
+            // btnSaveAll
+            // 
+            this.btnSaveAll.Location = new System.Drawing.Point(202, 189);
+            this.btnSaveAll.Name = "btnSaveAll";
+            this.btnSaveAll.Size = new System.Drawing.Size(110, 34);
+            this.btnSaveAll.TabIndex = 4;
+            this.btnSaveAll.Text = "Save All";
+            this.btnSaveAll.UseVisualStyleBackColor = true;
+            this.btnSaveAll.Click += new System.EventHandler(this.btnSaveAll_Click);
+            // 
+            // btnSaveDonations
+            // 
+            this.btnSaveDonations.Location = new System.Drawing.Point(318, 119);
+            this.btnSaveDonations.Name = "btnSaveDonations";
+            this.btnSaveDonations.Size = new System.Drawing.Size(110, 34);
+            this.btnSaveDonations.TabIndex = 3;
+            this.btnSaveDonations.Text = "Save Donations";
+            this.btnSaveDonations.UseVisualStyleBackColor = true;
+            this.btnSaveDonations.Click += new System.EventHandler(this.btnSaveDonations_Click);
+            // 
+            // btnSaveDonors
+            // 
+            this.btnSaveDonors.Location = new System.Drawing.Point(86, 119);
+            this.btnSaveDonors.Name = "btnSaveDonors";
+            this.btnSaveDonors.Size = new System.Drawing.Size(110, 34);
+            this.btnSaveDonors.TabIndex = 2;
+            this.btnSaveDonors.Text = "Save Donos";
+            this.btnSaveDonors.UseVisualStyleBackColor = true;
+            this.btnSaveDonors.Click += new System.EventHandler(this.btnSaveDonors_Click);
+            // 
+            // btnSavePrizes
+            // 
+            this.btnSavePrizes.Location = new System.Drawing.Point(318, 48);
+            this.btnSavePrizes.Name = "btnSavePrizes";
+            this.btnSavePrizes.Size = new System.Drawing.Size(110, 34);
+            this.btnSavePrizes.TabIndex = 1;
+            this.btnSavePrizes.Text = "Save Prizes";
+            this.btnSavePrizes.UseVisualStyleBackColor = true;
+            this.btnSavePrizes.Click += new System.EventHandler(this.btnSavePrizes_Click);
+            // 
+            // btnSaveSponors
+            // 
+            this.btnSaveSponors.Location = new System.Drawing.Point(86, 48);
+            this.btnSaveSponors.Name = "btnSaveSponors";
+            this.btnSaveSponors.Size = new System.Drawing.Size(110, 34);
+            this.btnSaveSponors.TabIndex = 0;
+            this.btnSaveSponors.Text = "Save Sponsors";
+            this.btnSaveSponors.UseVisualStyleBackColor = true;
+            this.btnSaveSponors.Click += new System.EventHandler(this.btnSaveSponors_Click);
+            // 
             // btnClose
             // 
             this.btnClose.Location = new System.Drawing.Point(547, 288);
@@ -741,13 +882,13 @@
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(643, 442);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabcontrol1);
             this.Controls.Add(this.rtbxList);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ETSTelethon";
             this.Text = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ETSTelethon_FormClosing);
-            this.tabControl1.ResumeLayout(false);
+            this.tabcontrol1.ResumeLayout(false);
             this.SponsorTab.ResumeLayout(false);
             this.SponsorTab.PerformLayout();
             this.DonorsTab.ResumeLayout(false);
@@ -758,13 +899,15 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabSave.ResumeLayout(false);
+            this.tabSave.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private System.Windows.Forms.RichTextBox rtbxList;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabcontrol1;
         private System.Windows.Forms.TabPage SponsorTab;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -812,7 +955,6 @@
         private System.Windows.Forms.RadioButton rbAMEX;
         private System.Windows.Forms.RadioButton rbMC;
         private System.Windows.Forms.RadioButton rbVisa;
-        private System.Windows.Forms.Button btnSaveDonorInfo;
         private System.Windows.Forms.Button btnListDonors;
         private System.Windows.Forms.Button btnListDonations;
         private System.Windows.Forms.Button btnAddDonation;
@@ -826,5 +968,17 @@
         private System.Windows.Forms.TextBox txtCreditCardExpiry;
         private System.Windows.Forms.TextBox txtCreditCardNumber;
         private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TabPage tabSave;
+        private System.Windows.Forms.Button btnSaveDonations;
+        private System.Windows.Forms.Button btnSaveDonors;
+        private System.Windows.Forms.Button btnSavePrizes;
+        private System.Windows.Forms.Button btnSaveSponors;
+        private System.Windows.Forms.Button btnSaveAll;
+        private System.Windows.Forms.RadioButton rbEspecific;
+        private System.Windows.Forms.RadioButton rbSimple;
+        private System.Windows.Forms.CheckBox cbSaveDonation;
+        private System.Windows.Forms.CheckBox cbSaveDonors;
+        private System.Windows.Forms.CheckBox cbSavePrizes;
+        private System.Windows.Forms.CheckBox cbSaveSponsor;
     }
 }
