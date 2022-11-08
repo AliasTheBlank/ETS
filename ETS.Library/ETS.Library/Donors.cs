@@ -30,6 +30,11 @@ namespace ETS.Library
             }
         }
 
+        public void Remove(Donor donor)
+        {
+            List.Remove(donor);
+        }
+
         public void SaveDonors()
         {
             using (StreamWriter sw = new StreamWriter(@".\Donors.txt"))

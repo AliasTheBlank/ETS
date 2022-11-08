@@ -21,6 +21,11 @@ namespace ETS.Library
             set { this[index] = value; }
         }
 
+        public void Delete(Sponsor sponsor)
+        {
+            List.Remove(sponsor);
+        }
+
         public void SaveSponsor()
         {
             using (StreamWriter sw = new StreamWriter(@".\Sponsors.txt"))

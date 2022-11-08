@@ -34,7 +34,7 @@ namespace TelethonSystem
         {
             var item = listView1.SelectedItems[0].Text;
 
-             _etsTelethon.InsertPrizeID(_myManager.GetPrizeID(item));
+             _etsTelethon.InsertPrizeID(_myManager.GetID(item));
             this.Close();
         }
 
