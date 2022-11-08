@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -396,7 +397,13 @@ namespace ETS.Library
 
         public void SaveUsers()
         {
-
+            using (StreamWriter sw = new StreamWriter(@".\users.txt"))
+            {
+                foreach (User user in myUsers)
+                {
+                    sw.WriteLine(user.ToString());
+                }
+            }
         }
 
         public bool FindUser(string username, string password)
@@ -588,6 +595,7 @@ namespace ETS.Library
             }
 
             var temp = new User(username, password, create, delete, manage);
+            myUsers.Add(temp);
             return "The user was succesfully added";
         }
 

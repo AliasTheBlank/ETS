@@ -496,7 +496,7 @@ namespace TelethonSystem
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var message = _myManager.DeleteUser(txtUsername.Text.Trim());
+            var message = _myManager.DeleteUser(txtUsername.Text.Trim(), _activeUser);
             MessageBox.Show(message);
             LoadGridView();
         }

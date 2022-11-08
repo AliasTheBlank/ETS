@@ -58,7 +58,7 @@ namespace ETS.Library
 
         public static List<User> ReadUsers()
         {
-            string path = @"./users.txt";
+            string path = @".\users.txt";
 
             List<User> users = new List<User>();
 
