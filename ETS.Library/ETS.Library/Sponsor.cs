@@ -45,9 +45,14 @@ namespace ETS.Library
             return TotalPrizeValue;
         }
 
+        public void DeductValue(double valueToDeduct)
+        {
+            _totalPrizeValue -= valueToDeduct;
+        }
+
         public override string DisplayData()
         {
-            return base.ToString() + $", SponsorID: {SponsorID}, Total Prize Value: {TotalPrizeValue}";
+            return $"SponsorID: {SponsorID}, " + base.DisplayData() + $", Total Prize Value: {TotalPrizeValue}";
         }
     }
 }

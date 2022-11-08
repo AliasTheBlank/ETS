@@ -54,7 +54,7 @@ namespace ETS.Library
 
         public override string DisplayData()
         {
-            return base.DisplayData() + $", DonorID: {DonorID}, Address: {Address}, Phone: {Phone}, Card type: {CardType}, Card Number: {CardNumber}, Card Expiracy: {CardExpiry}";
+            return $"DonorID: {DonorID}, " + base.DisplayData() + $", Address: {Address}, Phone: {Phone}, Card type: {CardType}, Card Number: {CardNumber}, Card Expiracy: {CardExpiry}";
         }
     }
 }

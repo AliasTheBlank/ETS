@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -71,27 +72,6 @@ namespace ETS.Library
             return (type == 'D' || type == 'C');
         }
 
-        // Obsolete
-        public bool ValidDate(string date)
-        {
-            if (date.Length != 5)
-                return false;
-
-            var year = date.Substring(3);
-            var month = date.Substring(0, 2);
-            
-
-            if (int.TryParse(month, out var numberOfMonts) && numberOfMonts < 1 && numberOfMonts > 12)
-                return false;
-
-            if (int.TryParse(year, out var numberOfYears) && numberOfYears < 2022)
-                return false;
-
-            return true;
-
-
-        }
-
         public bool ValidExpiradateDate(string expiracyDate)
         {
             if (!Regex.IsMatch(expiracyDate, @"\b(0[1-9]|1[0-2])\/?([0-9]{2})\b"))
@@ -152,71 +132,93 @@ namespace ETS.Library
             return ("The donor was successfully added", true);
         }
 
-        public string AddSponsor(string firstName, string lastName, string sponsorID, string totalPrizeValue)
+        public (string, bool) AddSponsor(string firstName, string lastName, string sponsorID, string totalPrizeValue)
         {
+            if (sponsorID == "")
+                return ("Please especify an sponsor ID", false);
+
             if (!IDLenghtVerifier(sponsorID))
-                return "Id lenght is different than 4 characters";
+                return ("Id lenght is different than 4 characters", false);
 
             if ((firstName.Length + lastName.Length) > 30)
-                return "Name and last name lenght have more than 30 characters";
+                return ("Name and last name lenght have more than 30 characters", false);
 
             if (SponsorsIDExist(sponsorID))
-                return "The given id is already in use";
+                return ("The given id is already in use", false);
 
             if (!double.TryParse(totalPrizeValue, out var dTotalPrizeValue))
-                return "the total prize has to be a number";
+                return ("the total prize has to be a number", false);
 
             if (dTotalPrizeValue < 0)
-                return "the total prize can't be negativa";
+                return ("the total prize can't be negativa", false);
 
             var newSponsor = new Sponsor(firstName, lastName, sponsorID, dTotalPrizeValue);
             _sponsors.Add(newSponsor);
 
-            return "The sponsor was successfully added";
+            return ("The sponsor was successfully added", true);
         }
 
-        public string AddPrize(string prizeID, string description, string value, string donationLimit, 
+        public (string, bool) AddPrize(string prizeID, string description, string value, string donationLimit, 
         string originalAvailable, string currentAvailable, string sponsorID)
         {
+            if (prizeID == "")
+                return ("Please insert a prize id", false);
+
             if (!IDLenghtVerifier(prizeID))
-                return "Id must be 4 characters long";
+                return ("Id must be 4 characters long", false);
 
             if (PrizeIDExist(prizeID))
-                return "The prize id is already being in used";
+                return ("The prize id is already being in used", false);
 
             if (description.Length > 15)
-                return "The prize length is bigger than 15 characters";
+                return ("The prize length is bigger than 15 characters", false);
 
             if (!double.TryParse(value, out var dValue))
-                return "The value has to be number";
+                return ("The value has to be number", false);
 
             if (dValue < 0)
-                return "the value can't be negative";
+                return ("the value can't be negative", false);
 
             if (!double.TryParse(donationLimit, out var dDonationLimit))
-                return "The donation limit cannot be negative";
+                return ("The donation limit cannot be negative", false);
 
             if (dDonationLimit < 0)
-                return "The donation limit cannot be negative";
+                return ("The donation limit cannot be negative", false);
 
             if (!int.TryParse(originalAvailable, out var dOriginalAvailable))
-                return "The original available amount has to be a number";
+                return ("The original available amount has to be a number", false);
 
             if (dOriginalAvailable < 0)
-                return "There cannot be a negative number of prizes";
+                return ("There cannot be a negative number of prizes", false);
 
             if (!int.TryParse(currentAvailable, out var dCurrentAvailable))
-                return "The current available cannot be negative";
+                return ("The current available cannot be negative", false);
 
             if (dCurrentAvailable < 0 || dCurrentAvailable > dOriginalAvailable)
-                return "The actual number of prizes cannot be bigger than the original prize";
+                return ("The actual number of prizes cannot be bigger than the original prize", false);
+
+            if (sponsorID == "")
+                return ("Please especify an sponsor ID", false);
 
             if (!SponsorsIDExist(sponsorID))
-                return "Error 404, Sponsor Id not found";
+                return ("Error 404, Sponsor Id not found", false);
+
+            RecordSponsorDonation(sponsorID, dOriginalAvailable, dValue);
 
             var temp = new Prize(prizeID, description, dValue, dDonationLimit, dOriginalAvailable, dCurrentAvailable, sponsorID);
             _prizes.Add(temp);
-            return "The prize was successfully added";
+            return ("The prize was successfully added", true);
+        }
+
+        private void RecordSponsorDonation(string sponsorID, int numberOfitem, double itemValue)
+        {
+            foreach (Sponsor sponsor in _sponsors)
+            {
+                if (sponsor.GetID() == sponsorID)
+                {
+                    sponsor.AddValue(numberOfitem * itemValue);
+                }
+            }
         }
 
         public (bool,string) AddDonation(string donationID, string donationDate, string donorID, string donationAmount, string prizeID)
@@ -322,7 +324,7 @@ namespace ETS.Library
                         return (false, "The donation amount doesn't qualify to this prize");
 
                     if (iNumberOfPrizes <= prize.CurrentAvailable && dDonationAmount >= (prize.Value * iNumberOfPrizes))
-                    { 
+                    {
                         var date = DateTime.Now.ToString("MM/dd/yyyy");
                         var flag = AddDonation(donationID, date, donorID, donationAmount, prizeID);
 
@@ -334,6 +336,12 @@ namespace ETS.Library
                         prize.Decrease(iNumberOfPrizes);
                         return flag;
                     }
+
+                    else if (iNumberOfPrizes > prize.CurrentAvailable)
+                        return (false, "Unavaliable number of prizes");
+
+                    else if (dDonationAmount < (prize.Value * iNumberOfPrizes))
+                        return (false, "The donation amount isn't enough for the prize(s)");
                 }
             }
 
@@ -387,6 +395,17 @@ namespace ETS.Library
             _sponsors.SaveSponsor();
         }
 
+        public void SaveUsers()
+        {
+            using (StreamWriter sw = new StreamWriter(@".\users.txt"))
+            {
+                foreach (User user in myUsers)
+                {
+                    sw.WriteLine(user.ToString());
+                }
+            }
+        }
+
         public bool FindUser(string username, string password)
         {
             foreach (var user in myUsers)
@@ -410,13 +429,253 @@ namespace ETS.Library
             return false;
         }
 
-        // To make this better I need to create a regex
-        public string GetPrizeID(string message)
+        // Finds the first ID, the class identifier and then return it
+        public string GetID(string message)
         {
-            var temp = message.Split(',');
-            temp = temp[0].Split(' ');
+            var strArr = message.Split(',');
+            string id = "";
+            foreach (string item in strArr)
+            {
+                if (item.Contains("ID:")) 
+                {
+                    var temp = item.Split(' ');
+                    id = temp[1];
+                    return id;
+                }
+            }
 
-            return temp[1];
+            return id;
+        }
+
+        public (string, bool) DeleteSponsor(string sponsorID, bool forceDelete)
+        {
+            var listOfPrizes = new List<string>();
+
+            foreach (Sponsor sponsor in _sponsors)
+            {
+                if (sponsor.GetID() == sponsorID)
+                {
+                    foreach (Prize prize in _prizes)
+                    {
+                        if (prize.SponsorID == sponsorID && !forceDelete)
+                            return ("The sponsor that you want to delete is related to one or more prizes, are you sure you want to delete? acception this will also delete the prizes", false);
+
+
+                        else if (prize.SponsorID == sponsorID && forceDelete)
+                            listOfPrizes.Add(prize.PrizeID);
+                    }
+
+
+                    _sponsors.Delete(sponsor);
+                    break;
+                }
+            }
+
+            
+            foreach (var id in listOfPrizes)
+            {
+                foreach (Prize prize in _prizes)
+                {
+                    if (prize.GetPrizeID() == id)
+                    {
+                        _prizes.Remove(prize);
+                        break;
+                    }
+                }
+            }
+
+            return ("The sponsor was succefully deleted", true);
+
+        }
+
+        public string DeletePrize(string prizeID)
+        {
+            foreach (Prize prize in _prizes)
+            {
+                if (prize.GetPrizeID() == prizeID)
+                {
+                    foreach (Sponsor sponsor in _sponsors)
+                    {
+                        if (sponsor.GetID() == prize.SponsorID)
+                            sponsor.DeductValue(prize.OriginalAvailable * prize.Value);
+                    }
+
+                    _prizes.Remove(prize);
+                    return "The prize was succefully deleted";
+                }
+                   
+            }
+            return "The sponsor wasn't found";
+        }
+
+        public (string, bool) DeleteDonor(string donorID, bool forceDelete)
+        {
+            var listOfDonations = new List<string>();
+
+            foreach (Donor donor in _donors)
+            {
+                if (donor.DonorID == donorID)
+                {
+                    foreach (Donation donation in _donations)
+                    {
+                        if (donation.DonorID == donorID && !forceDelete)
+                            return ("The donor that you want to delete is related to one or more donations, are you sure you want to delete? acception this will also delete the donations", false);
+
+
+                        else if (donation.DonorID == donorID && forceDelete)
+                            listOfDonations.Add(donation.DonationID);
+                    }
+
+                    // a donor doesn't exist without a donation
+                    _donors.Remove(donor);
+                    break;
+
+                }
+            }
+
+            foreach (var id in listOfDonations)
+                foreach (Donation donation in _donations)
+                    if (donation.DonorID == id)
+                    {
+                        _donations.Remove(donation);
+                        break;
+                    }
+
+            return ("The donor was succefully deleted", true);
+
+        }
+
+        public (string, bool) DeleteDonation(string donationID, bool forceDelete)
+        {
+            bool moreThanOneDonation = false;
+
+            foreach (Donation donation in _donations)
+            {
+                if (donation.DonationID == donationID)
+                {
+                    foreach (Donation jdonation in _donations)
+                    {
+                        if (donation.DonorID == jdonation.DonorID)
+                        {
+                            moreThanOneDonation = true;
+                            break;
+                        }
+                    }
+
+                    if (moreThanOneDonation)
+                    {
+                        _donations.Remove(donation);
+                        return ("The donation was deleted", true);
+                    }
+
+                    if (!forceDelete)
+                        return ("To delete this donation you need to also remove the donor, since a donor cannot be exist without a donation", false);
+
+                    foreach (Donor donor in _donors)
+                        if (donor.DonorID == donation.DonorID)
+                        {
+                            _donors.Remove(donor);
+                            _donations.Remove(donation);
+                            return ("the donation was deleted", true);
+                        }
+                    
+                    
+                }
+            }
+
+            return ("The donation wasn't found", false);
+        }
+
+        public string CreateUser(string username, string password, bool create, bool delete, bool manage)
+        {
+            foreach (User user in myUsers)
+            {
+                if (user.Username == username)
+                    return "This username is already in use";
+            }
+
+            var temp = new User(username, password, create, delete, manage);
+            myUsers.Add(temp);
+            return "The user was succesfully added";
+        }
+
+        public (bool, bool, bool) GetPermits(string username)
+        {
+            bool create = false;
+            bool delete = false;
+            bool manage = false;
+            foreach (var user in myUsers)
+            {
+                if (user.Username == username)
+                {
+                    create |= user.Permit.HasFlag(Permit.Create);
+                    delete |= user.Permit.HasFlag(Permit.Delete);
+                    manage |= user.Permit.HasFlag(Permit.Manage);
+                }
+            }
+
+            return (create, delete, manage);
+        }
+
+        public string EditUser(string username, string password, bool create, bool delete, bool manage)
+        {
+            foreach (User user in myUsers)
+            {
+                if (user.Username == username)
+                {
+                    user.Password = password;
+
+                    if (user.Permit.HasFlag(Permit.Master))
+                        return "Master password has been change. However, master permits can not be change";
+
+                    if (!create && user.Permit.HasFlag(Permit.Create))
+                        user.Permit &= ~Permit.Create;
+                    else if (create && !user.Permit.HasFlag(Permit.Create))
+                        user.Permit |= Permit.Create;
+
+                    if (!delete && user.Permit.HasFlag(Permit.Delete))
+                        user.Permit &= ~Permit.Delete;
+                    else if (delete && !user.Permit.HasFlag(Permit.Delete))
+                        user.Permit |= Permit.Delete;
+
+                    if (!manage && user.Permit.HasFlag(Permit.Manage))
+                        user.Permit &= ~Permit.Manage;
+                    else if (manage && !user.Permit.HasFlag(Permit.Manage))
+                        user.Permit |= Permit.Manage;
+
+                    return "The user has been edited";
+                }
+            }
+            return "Invalid user";
+        }
+
+        public List<string> UsersString()
+        {
+            var message = new List<string>();
+            foreach (User user in myUsers)
+            {
+                message.Add(user.DetailedData());
+            }
+
+            return message;
+        }
+
+        public string DeleteUser(string username, string activeUser)
+        {
+            if (username == "admin")
+                return "this user cannot be deleted";
+            if (username == activeUser)
+                return "the user cannot delete itself";
+            foreach (User user in myUsers)
+            {
+                if (user.Username == username)
+                {
+                    myUsers.Remove(user);
+                    return "The user was successfully deleted";
+                } 
+            }
+
+            return "There was an error when deleting the user";
         }
     }
 }

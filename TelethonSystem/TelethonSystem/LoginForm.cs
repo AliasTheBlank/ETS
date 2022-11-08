@@ -43,9 +43,17 @@ namespace TelethonSystem
 
                 return;
             }
-                
+
+            var permits = manager.GetPermits(txtUsername.Text);
+
+            if (!permits.Item1 && !permits.Item2 && !permits.Item3)
+            {
+                MessageBox.Show("This user doesn't have any access, application close", "Error" , MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
+
             this.Hide();
-            var myForm = new ETSTelethon(manager);
+            var myForm = new ETSTelethon(manager, permits.Item1, permits.Item2, permits.Item3, txtUsername.Text.Trim());
             myForm.Visible = true;
             myForm.Activate();
             
