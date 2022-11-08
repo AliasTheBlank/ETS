@@ -310,6 +310,16 @@ namespace ETS.Library
 
         public (bool, string) RecordDonation(string prizeID, string numberOfPrizes, string donorID, string donationAmount, string donationID)
         {
+            if (prizeID == "")
+                return (false, "Please especify a prize Id");
+
+            if (donorID == "")
+                return (false, "Please especify a donor Id");
+
+            if (donationID == "")
+                return (false, "Please especify a donor Id");
+
+
             if (!int.TryParse(numberOfPrizes, out var iNumberOfPrizes))
                 return (false, "the number of prizes has to be a number");
 
