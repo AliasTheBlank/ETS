@@ -71,27 +71,6 @@ namespace ETS.Library
             return (type == 'D' || type == 'C');
         }
 
-        // Obsolete
-        public bool ValidDate(string date)
-        {
-            if (date.Length != 5)
-                return false;
-
-            var year = date.Substring(3);
-            var month = date.Substring(0, 2);
-            
-
-            if (int.TryParse(month, out var numberOfMonts) && numberOfMonts < 1 && numberOfMonts > 12)
-                return false;
-
-            if (int.TryParse(year, out var numberOfYears) && numberOfYears < 2022)
-                return false;
-
-            return true;
-
-
-        }
-
         public bool ValidExpiradateDate(string expiracyDate)
         {
             if (!Regex.IsMatch(expiracyDate, @"\b(0[1-9]|1[0-2])\/?([0-9]{2})\b"))
